@@ -2,7 +2,7 @@
   "name": "dionsnoeijen/sexy-field-field-types-base",
   "description": "Section field basic field types",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "Dion Snoeijen",
