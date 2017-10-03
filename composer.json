@@ -2,6 +2,7 @@
   "name": "tardigrades/sexy-field-field-types-base",
   "description": "Section field basic field types",
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "license": "MIT",
   "authors": [
     {
