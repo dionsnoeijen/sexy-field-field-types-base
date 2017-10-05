@@ -32,13 +32,23 @@ class DateTimeField extends FieldType
 
         if (!$this->hasEntityEvent('prePersist')) {
 
+            $options = $this->formOptions($sectionEntity);
+
+            // Default values
+            if (empty($options)) {
+                $options = [
+                    'format' => DateTimeType::HTML5_FORMAT,
+                    'data' => 'now'
+                ];
+            }
+
+            // As a config value, pass the date time argument
+            $options['data'] = new \DateTime($options['data']);
+
             $formBuilder->add(
                 (string) $this->getConfig()->getHandle(),
                 DateTimeType::class,
-                [
-                    'format' => 'DD-mm-yyy H:i:s',
-                    'data' => new \DateTime()
-                ]
+                $options
             );
         }
 
