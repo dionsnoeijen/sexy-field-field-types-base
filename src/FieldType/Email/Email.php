@@ -11,7 +11,7 @@
 
 declare (strict_types=1);
 
-namespace Tardigrades\FieldType\Integer;
+namespace Tardigrades\FieldType\Email;
 
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
