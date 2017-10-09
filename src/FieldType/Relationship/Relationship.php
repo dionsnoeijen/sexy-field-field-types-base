@@ -190,7 +190,7 @@ class Relationship extends FieldType
             $entries = [];
         }
 
-        $choices = [ '' => '...' ];
+        $choices = [ '...' => null ];
         foreach ($entries as $entry) {
             $choices[$entry->getDefault()] = $entry;
         }

@@ -1,2 +1,2 @@
-/** @var int */
+/** @var string */
 protected ${{ propertyName }};
