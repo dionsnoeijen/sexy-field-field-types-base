@@ -11,7 +11,7 @@
 
 declare (strict_types=1);
 
-namespace Tardigrades\FieldType\Integer;
+namespace Tardigrades\FieldType\Number;
 
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
