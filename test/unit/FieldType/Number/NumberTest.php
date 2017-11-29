@@ -1,11 +1,11 @@
 <?php
 declare (strict_types=1);
 
-namespace Tardigrades\FieldType\Integer;
+namespace Tardigrades\FieldType\Number;
 
 use PHPUnit\Framework\TestCase;
 use Mockery as M;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
@@ -14,10 +14,10 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 use Tardigrades\SectionField\ValueObject\FieldConfig;
 
 /**
- * @coversDefaultClass Tardigrades\FieldType\Integer\Integer
+ * @coversDefaultClass Tardigrades\FieldType\Number\Number
  * @covers ::<private>
  */
-class IntegerTest extends TestCase
+class NumberTest extends TestCase
 {
     /**
      * @test
@@ -31,29 +31,29 @@ class IntegerTest extends TestCase
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
 
-        $integer = new Integer();
+        $number = new Number();
         $config = FieldConfig::fromArray(
             [
                 'field' =>
                     [
                         'name' => 'sexyname',
                         'handle' => 'lovehandles',
-                        'form' => ['all' => ['IntegerTesting']]
+                        'form' => ['all' => ['NumberTesting']]
                     ]
             ]
         );
-        $integer->setConfig($config);
+        $number->setConfig($config);
         $sectionEntity->shouldReceive('getId')
             ->once()
-            ->andReturn(400002);
+            ->andReturn(326542);
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with((string)$integer->getConfig()->getHandle(), IntegerType::class, ['IntegerTesting'])
+            ->with((string)$number->getConfig()->getHandle(), NumberType::class, ['NumberTesting'])
             ->andReturn($formBuilder);
-        $integer->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $number->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
 
-        $this->assertInstanceOf(Integer::class, $integer);
-        $this->assertEquals($integer->getConfig(), $config);
+        $this->assertInstanceOf(Number::class, $number);
+        $this->assertEquals($number->getConfig(), $config);
     }
 }
