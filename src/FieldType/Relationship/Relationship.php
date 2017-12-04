@@ -28,6 +28,7 @@ class Relationship extends FieldType
     const MANY_TO_MANY = 'many-to-many';
     const ONE_TO_MANY = 'one-to-many';
     const MANY_TO_ONE = 'many-to-one';
+    const ONE_TO_ONE = 'one-to-one';
 
     const JIT_VARIANT = 'jit';
 
@@ -39,7 +40,7 @@ class Relationship extends FieldType
         ReadSectionInterface $readSection
     ): FormBuilderInterface {
 
-        switch ($this->getConfig()->getKind()) {
+        switch ($this->getConfig()->getRelationshipKind()) {
             case self::MANY_TO_MANY:
                 return $this->addManyToManyToForm(
                     $formBuilder,
@@ -59,6 +60,14 @@ class Relationship extends FieldType
                 break;
             case self::MANY_TO_ONE:
                 $this->addManyToOneToForm(
+                    $formBuilder,
+                    $readSection,
+                    $sectionManager,
+                    $sectionEntity
+                );
+                break;
+            case self::ONE_TO_ONE:
+                $this->addOneToOneToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
@@ -191,6 +200,50 @@ class Relationship extends FieldType
         }
 
         $choices = [ '...' => null ];
+        foreach ($entries as $entry) {
+            $choices[$entry->getDefault()] = $entry;
+        }
+
+        $formBuilder->add(
+            $toHandle,
+            ChoiceType::class, [
+                'choices' => $choices,
+                'data' => $selectedEntity,
+                'multiple' => false
+            ]
+        );
+
+        return $formBuilder;
+    }
+
+    private function addOneToOneToForm(
+        FormBuilderInterface $formBuilder,
+        ReadSectionInterface $readSection,
+        SectionManagerInterface $sectionManager,
+        $sectionEntity
+    ): FormBuilderInterface {
+
+        $fieldConfig = $this->getConfig()->toArray();
+
+        $sectionTo = $sectionManager
+            ->readByHandle(Handle::fromString($fieldConfig['field']['to']));
+
+        $fullyQualifiedClassName = $sectionTo
+            ->getConfig()
+            ->getFullyQualifiedClassName();
+
+        $toHandle = $fieldConfig['field']['to'];
+        $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
+
+        try {
+            $entries = $readSection->read(ReadOptions::fromArray([
+                'section' => $fullyQualifiedClassName
+            ]));
+        } catch (\Exception $exception) {
+            $entries = [];
+        }
+
+        $choices = [];
         foreach ($entries as $entry) {
             $choices[$entry->getDefault()] = $entry;
         }
