@@ -31,7 +31,6 @@ class DateTimeField extends FieldType
     ): FormBuilderInterface {
 
         if (!$this->hasEntityEvent('prePersist')) {
-
             $options = $this->formOptions($sectionEntity);
 
             // Default values

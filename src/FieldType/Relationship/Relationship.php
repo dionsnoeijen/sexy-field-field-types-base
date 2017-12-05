@@ -114,7 +114,8 @@ class Relationship extends FieldType
 
         $formBuilder->add(
             $toHandle,
-            ChoiceType::class, [
+            ChoiceType::class,
+            [
                 'choices' => $choices,
                 'data' => $selectedEntities->toArray(),
                 'multiple' => true
@@ -159,7 +160,8 @@ class Relationship extends FieldType
 
         $formBuilder->add(
             $toHandle,
-            ChoiceType::class, [
+            ChoiceType::class,
+            [
                 'choices' => $choices,
                 'data' => $sectionEntities->toArray(),
                 'multiple' => true
@@ -206,7 +208,8 @@ class Relationship extends FieldType
 
         $formBuilder->add(
             $toHandle,
-            ChoiceType::class, [
+            ChoiceType::class,
+            [
                 'choices' => $choices,
                 'data' => $selectedEntity,
                 'multiple' => false
@@ -243,14 +246,15 @@ class Relationship extends FieldType
             $entries = [];
         }
 
-        $choices = [];
+        $choices = ['...' => null];
         foreach ($entries as $entry) {
             $choices[$entry->getDefault()] = $entry;
         }
 
         $formBuilder->add(
             $toHandle,
-            ChoiceType::class, [
+            ChoiceType::class,
+            [
                 'choices' => $choices,
                 'data' => $selectedEntity,
                 'multiple' => false

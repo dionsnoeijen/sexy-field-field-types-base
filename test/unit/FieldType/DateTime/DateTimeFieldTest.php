@@ -49,7 +49,11 @@ class DateTimeFieldTest extends TestCase
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with((string)$dateTimeField->getConfig()->getHandle(), DateTimeType::class, ['data'=>new \DateTime('2015-12-25')])
+            ->with(
+                (string)$dateTimeField->getConfig()->getHandle(),
+                DateTimeType::class,
+                ['data'=>new \DateTime('2015-12-25')]
+            )
             ->andReturn($formBuilder);
 
         $dateTimeField->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
