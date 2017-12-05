@@ -124,7 +124,13 @@ class RelationshipTest extends TestCase
             )
             ->andReturn($this->formBuilder);
 
-        $relation->addToForm($this->formBuilder, $this->section, $this->sectionEntity, $this->sectionManager, $this->readSection);
+        $relation->addToForm(
+            $this->formBuilder,
+            $this->section,
+            $this->sectionEntity,
+            $this->sectionManager,
+            $this->readSection
+        );
 
         $this->assertInstanceOf(Relationship::class, $relation);
         $this->assertEquals($relation->getConfig(), $fieldConfig);
@@ -206,7 +212,13 @@ class RelationshipTest extends TestCase
             )
             ->andReturn($this->formBuilder);
 
-        $relation->addToForm($this->formBuilder, $this->section, $this->sectionEntity, $this->sectionManager, $this->readSection);
+        $relation->addToForm(
+            $this->formBuilder,
+            $this->section,
+            $this->sectionEntity,
+            $this->sectionManager,
+            $this->readSection
+        );
 
         $this->assertInstanceOf(Relationship::class, $relation);
         $this->assertEquals($relation->getConfig(), $fieldConfig);
@@ -292,7 +304,101 @@ class RelationshipTest extends TestCase
             )
             ->andReturn($this->formBuilder);
 
-        $relation->addToForm($this->formBuilder, $this->section, $this->sectionEntity, $this->sectionManager, $this->readSection);
+        $relation->addToForm(
+            $this->formBuilder,
+            $this->section,
+            $this->sectionEntity,
+            $this->sectionManager,
+            $this->readSection
+        );
+
+        $this->assertInstanceOf(Relationship::class, $relation);
+        $this->assertEquals($relation->getConfig(), $fieldConfig);
+    }
+
+    /**
+     * @test
+     * @covers ::addToForm
+     */
+    public function it_adds_to_form_one_to_one()
+    {
+        $relation = new Relationship();
+        $fieldConfig = FieldConfig::fromArray(
+            [
+                'field' =>
+                    [
+                        'name' => 'sexyname',
+                        'handle' => 'lovehandles',
+                        'kind' => 'one-to-one',
+                        'to' => 'neptune',
+                        'form' => ['all' => ['relations']],
+                        'variant' => 'not the variant you are looking for'
+                    ]
+            ]
+        );
+        $relation->setConfig($fieldConfig);
+
+        $this->sectionEntity->shouldReceive('getId')
+            ->once()
+            ->andReturn(9);
+
+        $sectionTo = M::mock(SectionInterface::class)->makePartial();
+
+        $this->sectionManager->shouldReceive('readByHandle')
+            ->once()
+            ->andReturn($sectionTo);
+
+        $sectionConfigTo = SectionConfig::fromArray(
+            [
+                'section' => [
+                    'name' => 'nameOfSection',
+                    'handle' => 'handleOfSection',
+                    'fields' => ['1', '2', '3'],
+                    'default' => 'sexyPerDefault',
+                    'namespace' => 'the space has no name'
+                ]
+            ]
+        );
+
+        $sectionTo->shouldReceive('getConfig')
+            ->once()
+            ->andReturn($sectionConfigTo);
+
+        $selectedEntity = M::mock('alias:selectedEntity')->makePartial();
+
+        $this->sectionEntity->shouldReceive('getNeptune')
+            ->once()
+            ->andReturn($selectedEntity);
+
+        $mockEntry = M::mock('alias:entry')->makePartial();
+        $mockEntry->shouldReceive('getDefault')
+            ->once()
+            ->andReturn('planetarySexyEntry');
+
+        $this->readSection->shouldReceive('read')
+            ->once()
+            ->andReturn(new \ArrayIterator([$mockEntry]));
+
+        $this->formBuilder->shouldReceive('add')
+            ->once()
+            ->with(
+                'neptune',
+                ChoiceType::class,
+                [
+                    'choices' => ['...' => null, 'planetarySexyEntry' => $mockEntry],
+                    'data' => $selectedEntity,
+                    'multiple' => false
+                ]
+            )
+            ->andReturn($this->formBuilder);
+
+        $relation->addToForm(
+            $this->formBuilder,
+            $this->section,
+            $this->sectionEntity,
+            $this->sectionManager,
+            $this->readSection
+        );
 
         $this->assertInstanceOf(Relationship::class, $relation);
         $this->assertEquals($relation->getConfig(), $fieldConfig);
