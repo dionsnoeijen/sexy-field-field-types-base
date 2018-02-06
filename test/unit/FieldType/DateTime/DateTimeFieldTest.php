@@ -38,7 +38,13 @@ class DateTimeFieldTest extends TestCase
                     [
                         'name' => 'sexyname',
                         'handle' => 'lovehandles',
-                        'form' => ['all' => ['data' => '2015-12-25']]
+                        'form' => [
+                            'all' => [
+                                'label' => 'a label',
+                                'format' => DateTimeType::HTML5_FORMAT,
+                                'data' => '2015-12-25'
+                            ]
+                        ]
                     ]
             ]
         );
@@ -52,8 +58,50 @@ class DateTimeFieldTest extends TestCase
             ->with(
                 (string)$dateTimeField->getConfig()->getHandle(),
                 DateTimeType::class,
-                ['data'=>new \DateTime('2015-12-25')]
+                [
+                    'label' => 'a label',
+                    'format' => DateTimeType::HTML5_FORMAT,
+                    'data'=>new \DateTime('2015-12-25')
+                ]
             )
+            ->andReturn($formBuilder);
+
+        $dateTimeField->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+
+        $this->assertInstanceOf(DateTimeField::class, $dateTimeField);
+        $this->assertEquals($dateTimeField->getConfig(), $config);
+    }
+
+    /**
+     * @test
+     * @covers ::addToForm
+     */
+    public function it_adds_to_form_even_if_no_format_or_data_key_in_config()
+    {
+        $formBuilder = M::mock(FormBuilderInterface::class);
+        $section = M::mock(SectionInterface::class);
+        $sectionEntity = M::mock(FieldType::class);
+        $sectionManager = M::mock(SectionManagerInterface::class);
+        $readSection = M::mock(ReadSectionInterface::class);
+
+        $dateTimeField = new DateTimeField();
+        $config = FieldConfig::fromArray(
+            [
+                'field' =>
+                    [
+                        'name' => 'sexyname',
+                        'handle' => 'lovehandles',
+                        'form' => ['all' => ['label' => 'a label']]
+                    ]
+            ]
+        );
+        $dateTimeField->setConfig($config);
+        $sectionEntity->shouldReceive('getId')
+            ->once()
+            ->andReturn(4);
+
+        $formBuilder->shouldReceive('add')
+            ->once()
             ->andReturn($formBuilder);
 
         $dateTimeField->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);

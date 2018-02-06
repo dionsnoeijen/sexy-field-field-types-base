@@ -34,11 +34,12 @@ class DateTimeField extends FieldType
             $options = $this->formOptions($sectionEntity);
 
             // Default values
-            if (empty($options)) {
-                $options = [
-                    'format' => DateTimeType::HTML5_FORMAT,
-                    'data' => 'now'
-                ];
+            if (!isset($options['format'])) {
+                $options['format'] = DateTimeType::HTML5_FORMAT;
+            }
+
+            if (!isset($options['data'])) {
+                $options['data'] = 'now';
             }
 
             // As a config value, pass the date time argument
