@@ -19,6 +19,8 @@ use Tardigrades\SectionField\ValueObject\FieldConfig;
  */
 class TextAreaTest extends TestCase
 {
+    use M\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /**
      * @test
      * @covers ::addToForm
@@ -42,9 +44,6 @@ class TextAreaTest extends TestCase
             ]
         );
         $textArea->setConfig($config);
-        $sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(2001);
 
         $formBuilder->shouldReceive('add')
             ->once()

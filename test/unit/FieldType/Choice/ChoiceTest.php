@@ -19,6 +19,8 @@ use Tardigrades\SectionField\ValueObject\FieldConfig;
  */
 class ChoiceTest extends TestCase
 {
+    use M\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /**
      * @test
      * @covers ::addToForm
