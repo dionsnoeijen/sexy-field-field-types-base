@@ -18,6 +18,8 @@ use Tardigrades\SectionField\ValueObject\FieldConfig;
  */
 class SlugTest extends TestCase
 {
+    use M\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /**
      * @test
      * @covers ::addToForm
