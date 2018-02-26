@@ -20,6 +20,8 @@ use Tardigrades\SectionField\ValueObject\SectionConfig;
  */
 class RelationshipTest extends TestCase
 {
+    use M\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     /** @var FormBuilderInterface|M\Mock */
     private $formBuilder;
 
@@ -64,10 +66,6 @@ class RelationshipTest extends TestCase
             ]
         );
         $relation->setConfig($fieldConfig);
-
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
 
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
@@ -157,10 +155,6 @@ class RelationshipTest extends TestCase
         );
         $relation->setConfig($fieldConfig);
 
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
-
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
         $this->sectionManager->shouldReceive('readByHandle')
@@ -248,10 +242,6 @@ class RelationshipTest extends TestCase
         );
         $relation->setConfig($fieldConfig);
 
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
-
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
         $this->sectionManager->shouldReceive('readByHandle')
@@ -337,10 +327,6 @@ class RelationshipTest extends TestCase
         );
         $relation->setConfig($fieldConfig);
 
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
-
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
         $this->sectionManager->shouldReceive('readByHandle')
@@ -424,10 +410,6 @@ class RelationshipTest extends TestCase
             ]
         );
         $relation->setConfig($fieldConfig);
-
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
 
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
@@ -518,10 +500,6 @@ class RelationshipTest extends TestCase
         );
         $relation->setConfig($fieldConfig);
 
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
-
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
         $this->sectionManager->shouldReceive('readByHandle')
@@ -609,10 +587,6 @@ class RelationshipTest extends TestCase
         );
         $relation->setConfig($fieldConfig);
 
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
-
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
         $this->sectionManager->shouldReceive('readByHandle')
@@ -697,10 +671,6 @@ class RelationshipTest extends TestCase
             ]
         );
         $relation->setConfig($fieldConfig);
-
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
 
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
