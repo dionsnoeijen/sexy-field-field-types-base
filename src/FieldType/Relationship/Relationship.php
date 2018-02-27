@@ -112,12 +112,14 @@ class Relationship extends FieldType
         $toHandle = Inflector::pluralize($fieldConfig['field']['to']);
         $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
+        $selectedEntitiesArray = $selectedEntities ? $selectedEntities->toArray() : null;
+
         $formBuilder->add(
             $toHandle,
             ChoiceType::class,
             [
                 'choices' => $choices,
-                'data' => $selectedEntities->toArray(),
+                'data' => $selectedEntitiesArray,
                 'multiple' => true
             ]
         );
@@ -144,6 +146,7 @@ class Relationship extends FieldType
         $toHandle = Inflector::pluralize($fieldConfig['field']['to']);
 
         $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
+        $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
 
         try {
             $entries = $readSection->read(ReadOptions::fromArray([
@@ -163,7 +166,7 @@ class Relationship extends FieldType
             ChoiceType::class,
             [
                 'choices' => $choices,
-                'data' => $sectionEntities->toArray(),
+                'data' => $sectionEntitiesArray,
                 'multiple' => true
             ]
         );

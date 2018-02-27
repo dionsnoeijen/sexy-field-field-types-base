@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
-use Tardigrades\FieldType\Relationship\Relationship;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
 use Tardigrades\SectionField\ValueObject\FieldConfig;
@@ -48,9 +47,9 @@ class RelationshipTest extends TestCase
     }
 
     /**
- * @test
- * @covers ::addToForm
- */
+     * @test
+     * @covers ::addToForm
+     */
     public function it_adds_to_form_one_to_many()
     {
         $relation = new Relationship();
@@ -117,6 +116,93 @@ class RelationshipTest extends TestCase
                 [
                     'choices' => ['planetarySexyEntry' => $mockEntry],
                     'data' => ['Uranus, Mars, Venus'],
+                    'multiple' => true
+                ]
+            )
+            ->andReturn($this->formBuilder);
+
+        $relation->addToForm(
+            $this->formBuilder,
+            $this->section,
+            $this->sectionEntity,
+            $this->sectionManager,
+            $this->readSection
+        );
+
+        $this->assertInstanceOf(Relationship::class, $relation);
+        $this->assertEquals($relation->getConfig(), $fieldConfig);
+    }
+
+
+    /**
+     * @test
+     * @covers ::addToForm
+     */
+    public function it_adds_to_form_one_to_many_when_no_children_are_found()
+    {
+        $relation = new Relationship();
+        $fieldConfig = FieldConfig::fromArray(
+            [
+                'field' =>
+                    [
+                        'name' => 'sexyname',
+                        'handle' => 'lovehandles',
+                        'kind' => 'one-to-many',
+                        'to' => 'pluto',
+                        'form' => ['all' => ['relations']]
+                    ]
+            ]
+        );
+        $relation->setConfig($fieldConfig);
+
+        $sectionTo = M::mock(SectionInterface::class)->makePartial();
+
+        $this->sectionManager->shouldReceive('readByHandle')
+            ->once()
+            ->andReturn($sectionTo);
+
+        $sectionConfigTo = SectionConfig::fromArray(
+            [
+                'section' => [
+                    'name' => 'nameOfSection',
+                    'handle' => 'handleOfSection',
+                    'fields' => ['1', '2', '3'],
+                    'default' => 'sexyPerDefault',
+                    'namespace' => 'the space has no name'
+                ]
+            ]
+        );
+
+        $sectionTo->shouldReceive('getConfig')
+            ->once()
+            ->andReturn($sectionConfigTo);
+
+        $sectionEntities = M::mock('alias:sexyEntities')->makePartial();
+
+        $this->sectionEntity->shouldReceive('getPlutos')
+            ->once()
+            ->andReturn(null);
+
+        $mockEntry = M::mock('alias:entry')->makePartial();
+        $mockEntry->shouldReceive('getDefault')
+            ->once()
+            ->andReturn('planetarySexyEntry');
+
+        $this->readSection->shouldReceive('read')
+            ->once()
+            ->andReturn(new \ArrayIterator([$mockEntry]));
+
+        $sectionEntities->shouldReceive('toArray')
+            ->never();
+
+        $this->formBuilder->shouldReceive('add')
+            ->once()
+            ->with(
+                'plutos',
+                ChoiceType::class,
+                [
+                    'choices' => ['planetarySexyEntry' => $mockEntry],
+                    'data' => null,
                     'multiple' => true
                 ]
             )
@@ -240,10 +326,6 @@ class RelationshipTest extends TestCase
             ]
         );
         $relation->setConfig($fieldConfig);
-
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
 
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
@@ -395,6 +477,94 @@ class RelationshipTest extends TestCase
         $this->assertEquals($relation->getConfig(), $fieldConfig);
     }
 
+
+    /**
+     * @test
+     * @covers ::addToForm
+     */
+    public function it_adds_to_form_many_to_many_when_no_relations_are_found()
+    {
+        $relation = new Relationship();
+        $fieldConfig = FieldConfig::fromArray(
+            [
+                'field' =>
+                    [
+                        'name' => 'sexyname',
+                        'handle' => 'lovehandles',
+                        'kind' => 'many-to-many',
+                        'to' => 'mistletoeRedpole',
+                        'form' => ['all' => ['lots of relations']],
+                        'variant' => 'not the variant you are looking for'
+                    ]
+            ]
+        );
+        $relation->setConfig($fieldConfig);
+
+        $sectionTo = M::mock(SectionInterface::class)->makePartial();
+
+        $this->sectionManager->shouldReceive('readByHandle')
+            ->once()
+            ->andReturn($sectionTo);
+
+        $sectionConfigTo = SectionConfig::fromArray(
+            [
+                'section' => [
+                    'name' => 'nameOfSection',
+                    'handle' => 'handleOfSection',
+                    'fields' => ['1', '2', '3'],
+                    'default' => 'sexyPerDefault',
+                    'namespace' => 'the space has no name'
+                ]
+            ]
+        );
+
+        $sectionTo->shouldReceive('getConfig')
+            ->once()
+            ->andReturn($sectionConfigTo);
+
+        $selectedEntity = M::mock('alias:selectedEntity')->makePartial();
+
+        $this->sectionEntity->shouldReceive('getMistletoeRedpoles')
+            ->once()
+            ->andReturn(null);
+
+        $selectedEntity->shouldReceive('toArray')
+            ->never();
+
+        $mockEntry = M::mock('alias:entry')->makePartial();
+        $mockEntry->shouldReceive('getDefault')
+            ->once()
+            ->andReturn('Red-Cloaked BrightBalls');
+
+        $this->readSection->shouldReceive('read')
+            ->once()
+            ->andReturn(new \ArrayIterator([$mockEntry]));
+
+        $this->formBuilder->shouldReceive('add')
+            ->once()
+            ->with(
+                'mistletoeRedpoles',
+                ChoiceType::class,
+                [
+                    'choices' => ['Red-Cloaked BrightBalls' => $mockEntry],
+                    'data' => null,
+                    'multiple' => true
+                ]
+            )
+            ->andReturn($this->formBuilder);
+
+        $relation->addToForm(
+            $this->formBuilder,
+            $this->section,
+            $this->sectionEntity,
+            $this->sectionManager,
+            $this->readSection
+        );
+
+        $this->assertInstanceOf(Relationship::class, $relation);
+        $this->assertEquals($relation->getConfig(), $fieldConfig);
+    }
+
     /**
      * @test
      * @covers ::addToForm
@@ -501,10 +671,6 @@ class RelationshipTest extends TestCase
             ]
         );
         $relation->setConfig($fieldConfig);
-
-        $this->sectionEntity->shouldReceive('getId')
-            ->once()
-            ->andReturn(9);
 
         $sectionTo = M::mock(SectionInterface::class)->makePartial();
 
