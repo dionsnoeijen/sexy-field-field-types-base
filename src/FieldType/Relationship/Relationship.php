@@ -143,7 +143,8 @@ class Relationship extends FieldType
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-        $toHandle = Inflector::pluralize($fieldConfig['field']['to']);
+        $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
+        $toHandle = Inflector::pluralize($toHandle);
 
         $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
         $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
