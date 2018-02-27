@@ -190,7 +190,7 @@ class Relationship extends FieldType
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-        $toHandle = $fieldConfig['field']['to'];
+        $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
         $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
         try {
@@ -235,7 +235,7 @@ class Relationship extends FieldType
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-        $toHandle = $fieldConfig['field']['to'];
+        $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
         $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
         try {
