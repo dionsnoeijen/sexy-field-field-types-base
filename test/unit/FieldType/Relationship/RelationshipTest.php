@@ -100,6 +100,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('planetarySexyEntry');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -114,12 +118,20 @@ class RelationshipTest extends TestCase
                 'plutos',
                 ChoiceType::class,
                 [
-                    'choices' => ['planetarySexyEntry' => $mockEntry],
+                    'choices' => ['planetarySexyEntry' => 'planetary-sexy-entry'],
                     'data' => ['Uranus, Mars, Venus'],
                     'multiple' => true
                 ]
             )
             ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
+            ->andReturn($this->formBuilder);
+
 
         $relation->addToForm(
             $this->formBuilder,
@@ -188,6 +200,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('planetarySexyEntry');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -201,11 +217,18 @@ class RelationshipTest extends TestCase
                 'plutos',
                 ChoiceType::class,
                 [
-                    'choices' => ['planetarySexyEntry' => $mockEntry],
+                    'choices' => ['planetarySexyEntry' => 'planetary-sexy-entry'],
                     'data' => null,
                     'multiple' => true
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(
@@ -275,6 +298,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('planetarySexyEntry');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -285,11 +312,18 @@ class RelationshipTest extends TestCase
                 'neptune',
                 ChoiceType::class,
                 [
-                    'choices' => ['...' => null, 'planetarySexyEntry' => $mockEntry],
+                    'choices' => ['...' => null, 'planetarySexyEntry' => 'planetary-sexy-entry'],
                     'data' => $selectedEntity,
                     'multiple' => false
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(
@@ -360,6 +394,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('planetarySexyEntry');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -370,11 +408,18 @@ class RelationshipTest extends TestCase
                 'somethingElse',
                 ChoiceType::class,
                 [
-                    'choices' => ['...' => null, 'planetarySexyEntry' => $mockEntry],
+                    'choices' => ['...' => null, 'planetarySexyEntry' => 'planetary-sexy-entry'],
                     'data' => $selectedEntity,
                     'multiple' => false
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(
@@ -448,6 +493,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('Red-Cloaked BrightBalls');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -458,11 +507,18 @@ class RelationshipTest extends TestCase
                 'mistletoeRedpoles',
                 ChoiceType::class,
                 [
-                    'choices' => ['Red-Cloaked BrightBalls' => $mockEntry],
+                    'choices' => ['Red-Cloaked BrightBalls' => 'planetary-sexy-entry'],
                     'data' => ['MarinatedHotham', 'GravyCreamBlizzard'],
                     'multiple' => true
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(
@@ -536,6 +592,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('Red-Cloaked BrightBalls');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('red-cloaked-brightballs');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -546,11 +606,18 @@ class RelationshipTest extends TestCase
                 'mistletoeRedpoles',
                 ChoiceType::class,
                 [
-                    'choices' => ['Red-Cloaked BrightBalls' => $mockEntry],
+                    'choices' => ['Red-Cloaked BrightBalls' => 'red-cloaked-brightballs'],
                     'data' => null,
                     'multiple' => true
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(
@@ -620,6 +687,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('planetarySexyEntry');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -630,11 +701,18 @@ class RelationshipTest extends TestCase
                 'neptune',
                 ChoiceType::class,
                 [
-                    'choices' => ['...' => null, 'planetarySexyEntry' => $mockEntry],
+                    'choices' => ['...' => null, 'planetarySexyEntry' => 'planetary-sexy-entry'],
                     'data' => $selectedEntity,
                     'multiple' => false
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(
@@ -705,6 +783,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn('planetarySexyEntry');
 
+        $mockEntry->shouldReceive('getSlug')
+            ->once()
+            ->andReturn('planetary-sexy-entry');
+
         $this->readSection->shouldReceive('read')
             ->once()
             ->andReturn(new \ArrayIterator([$mockEntry]));
@@ -715,11 +797,18 @@ class RelationshipTest extends TestCase
                 'somethingElse',
                 ChoiceType::class,
                 [
-                    'choices' => ['...' => null, 'planetarySexyEntry' => $mockEntry],
+                    'choices' => ['...' => null, 'planetarySexyEntry' => 'planetary-sexy-entry'],
                     'data' => $selectedEntity,
                     'multiple' => false
                 ]
             )
+            ->andReturn($this->formBuilder);
+
+        $this->formBuilder->shouldReceive('addModelTransformer')
+            ->once();
+
+        $this->formBuilder->shouldReceive('get')
+            ->once()
             ->andReturn($this->formBuilder);
 
         $relation->addToForm(

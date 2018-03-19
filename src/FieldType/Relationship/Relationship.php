@@ -16,6 +16,7 @@ namespace Tardigrades\FieldType\Relationship;
 use Doctrine\Common\Util\Inflector;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\CallbackTransformer;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Service\ReadOptions;
@@ -29,8 +30,6 @@ class Relationship extends FieldType
     const ONE_TO_MANY = 'one-to-many';
     const MANY_TO_ONE = 'many-to-one';
     const ONE_TO_ONE = 'one-to-one';
-
-    const JIT_VARIANT = 'jit';
 
     public function addToForm(
         FormBuilderInterface $formBuilder,
@@ -106,10 +105,11 @@ class Relationship extends FieldType
 
         $choices = [];
         foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = $entry;
+            $choices[$entry->getDefault()] = (string) $entry->getSlug();
         }
 
-        $toHandle = Inflector::pluralize($fieldConfig['field']['to']);
+        $sectionHandle = $fieldConfig['field']['to'];
+        $toHandle = Inflector::pluralize($sectionHandle);
         $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
         $selectedEntitiesArray = $selectedEntities ? $selectedEntities->toArray() : null;
@@ -123,6 +123,22 @@ class Relationship extends FieldType
                 'multiple' => true
             ]
         );
+
+        $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
+            function () { return; },
+            function ($many) use ($sectionHandle, $readSection) {
+                $entries = [];
+                foreach ($many as $slug) {
+                    $entries[] = $readSection->read(
+                        ReadOptions::fromArray([
+                            ReadOptions::SECTION => $sectionHandle,
+                            ReadOptions::SLUG => $slug
+                        ])
+                    )->current();
+                }
+                return $entries;
+            }
+        ));
 
         return $formBuilder;
     }
@@ -146,6 +162,7 @@ class Relationship extends FieldType
         $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
         $toHandle = Inflector::pluralize($toHandle);
 
+        $sectionHandle = $fieldConfig['field']['to'];
         $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
         $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
 
@@ -159,7 +176,7 @@ class Relationship extends FieldType
 
         $choices = [];
         foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = $entry;
+            $choices[$entry->getDefault()] = (string) $entry->getSlug();
         }
 
         $formBuilder->add(
@@ -172,6 +189,22 @@ class Relationship extends FieldType
             ]
         );
 
+        $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
+            function () { return; },
+            function ($many) use ($sectionHandle, $readSection) {
+                $entries = [];
+                foreach ($many as $slug) {
+                    $entries[] = $readSection->read(
+                        ReadOptions::fromArray([
+                            ReadOptions::SECTION => $sectionHandle,
+                            ReadOptions::SLUG => $slug
+                        ])
+                    )->current();
+                }
+                return $entries;
+            }
+        ));
+
         return $formBuilder;
     }
 
@@ -183,9 +216,6 @@ class Relationship extends FieldType
     ): FormBuilderInterface {
 
         $fieldConfig = $this->getConfig()->toArray();
-        if ($fieldConfig['field']['variant'] === self::JIT_VARIANT) {
-            return $formBuilder;
-        }
 
         $sectionTo = $sectionManager
             ->readByHandle(Handle::fromString($fieldConfig['field']['to']));
@@ -205,9 +235,9 @@ class Relationship extends FieldType
             $entries = [];
         }
 
-        $choices = [ '...' => null ];
+        $choices = [ '...' => false ];
         foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = $entry;
+            $choices[$entry->getDefault()] = (string) $entry->getSlug();
         }
 
         $formBuilder->add(
@@ -219,6 +249,18 @@ class Relationship extends FieldType
                 'multiple' => false
             ]
         );
+
+        $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
+            function () { return; },
+            function ($slug) use ($toHandle, $readSection) {
+                return $readSection->read(
+                    ReadOptions::fromArray([
+                        ReadOptions::SECTION => $toHandle,
+                        ReadOptions::SLUG => $slug
+                    ])
+                )->current();
+            }
+        ));
 
         return $formBuilder;
     }
@@ -250,9 +292,9 @@ class Relationship extends FieldType
             $entries = [];
         }
 
-        $choices = ['...' => null];
+        $choices = ['...' => false];
         foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = $entry;
+            $choices[(string) $entry->getDefault()] = (string) $entry->getSlug();
         }
 
         $formBuilder->add(
@@ -264,6 +306,18 @@ class Relationship extends FieldType
                 'multiple' => false
             ]
         );
+
+        $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
+            function () { return; },
+            function ($slug) use ($toHandle, $readSection) {
+                return $readSection->read(
+                    ReadOptions::fromArray([
+                        ReadOptions::SECTION => $toHandle,
+                        ReadOptions::SLUG => $slug
+                    ])
+                )->current();
+            }
+        ));
 
         return $formBuilder;
     }
