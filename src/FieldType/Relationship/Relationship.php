@@ -252,10 +252,10 @@ class Relationship extends FieldType
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
             function () { return; },
-            function ($slug) use ($toHandle, $readSection) {
+            function ($slug) use ($fieldConfig, $readSection) {
                 return $readSection->read(
                     ReadOptions::fromArray([
-                        ReadOptions::SECTION => $toHandle,
+                        ReadOptions::SECTION => $fieldConfig['field']['to'],
                         ReadOptions::SLUG => $slug
                     ])
                 )->current();
