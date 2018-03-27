@@ -88,8 +88,10 @@ class Relationship extends FieldType
 
         $fieldConfig = $this->getConfig()->toArray();
 
+        $sectionHandle = $fieldConfig['field']['to'];
+
         $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($fieldConfig['field']['to']));
+            ->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
@@ -108,7 +110,6 @@ class Relationship extends FieldType
             $choices[$entry->getDefault()] = (string) $entry->getSlug();
         }
 
-        $sectionHandle = $fieldConfig['field']['to'];
         $toHandle = Inflector::pluralize($sectionHandle);
         $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
@@ -152,17 +153,18 @@ class Relationship extends FieldType
 
         $fieldConfig = $this->getConfig()->toArray();
 
+        $sectionHandle = $fieldConfig['field']['to'];
+
         $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($fieldConfig['field']['to']));
+            ->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-        $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
+        $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
         $toHandle = Inflector::pluralize($toHandle);
 
-        $sectionHandle = $fieldConfig['field']['to'];
         $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
         $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
 
@@ -217,14 +219,16 @@ class Relationship extends FieldType
 
         $fieldConfig = $this->getConfig()->toArray();
 
+        $sectionHandle = $fieldConfig['field']['to'];
+
         $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($fieldConfig['field']['to']));
+            ->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-        $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
+        $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
         $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
         try {
@@ -252,10 +256,10 @@ class Relationship extends FieldType
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
             function () { return; },
-            function ($slug) use ($fieldConfig, $readSection) {
+            function ($slug) use ($sectionHandle, $readSection) {
                 return $readSection->read(
                     ReadOptions::fromArray([
-                        ReadOptions::SECTION => $fieldConfig['field']['to'],
+                        ReadOptions::SECTION => $sectionHandle,
                         ReadOptions::SLUG => $slug
                     ])
                 )->current();
@@ -274,14 +278,15 @@ class Relationship extends FieldType
 
         $fieldConfig = $this->getConfig()->toArray();
 
+        $sectionHandle = $fieldConfig['field']['to'];
         $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($fieldConfig['field']['to']));
+            ->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-        $toHandle = $fieldConfig['field']['as'] ?? $fieldConfig['field']['to'];
+        $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
         $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
         try {
@@ -309,10 +314,10 @@ class Relationship extends FieldType
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
             function () { return; },
-            function ($slug) use ($toHandle, $readSection) {
+            function ($slug) use ($sectionHandle, $readSection) {
                 return $readSection->read(
                     ReadOptions::fromArray([
-                        ReadOptions::SECTION => $toHandle,
+                        ReadOptions::SECTION => $sectionHandle,
                         ReadOptions::SLUG => $slug
                     ])
                 )->current();
