@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
+use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
 
@@ -25,7 +26,7 @@ class DateTimeField extends FieldType
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,
-        $sectionEntity,
+        CommonSectionInterface $sectionEntity,
         SectionManagerInterface $sectionManager,
         ReadSectionInterface $readSection
     ): FormBuilderInterface {

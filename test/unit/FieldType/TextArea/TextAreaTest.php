@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
+use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
 use Tardigrades\SectionField\ValueObject\FieldConfig;
@@ -29,7 +30,7 @@ class TextAreaTest extends TestCase
     {
         $formBuilder = M::mock(FormBuilderInterface::class);
         $section = M::mock(SectionInterface::class);
-        $sectionEntity = M::mock(FieldType::class);
+        $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
 
@@ -47,7 +48,7 @@ class TextAreaTest extends TestCase
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with('Frostbeard MilkSwallow', TextareaType::class)
+            ->with('Frostbeard MilkSwallow', TextareaType::class, [])
             ->andReturn($formBuilder);
 
         $textArea->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);

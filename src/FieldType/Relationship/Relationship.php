@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\CallbackTransformer;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
+use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadOptions;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
@@ -34,7 +35,7 @@ class Relationship extends FieldType
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,
-        $sectionEntity,
+        CommonSectionInterface $sectionEntity,
         SectionManagerInterface $sectionManager,
         ReadSectionInterface $readSection
     ): FormBuilderInterface {
@@ -48,31 +49,27 @@ class Relationship extends FieldType
                     $sectionEntity,
                     $section
                 );
-                break;
             case self::ONE_TO_MANY:
-                $this->addOneToManyToForm(
+                return $this->addOneToManyToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
                     $sectionEntity
                 );
-                break;
             case self::MANY_TO_ONE:
-                $this->addManyToOneToForm(
+                return $this->addManyToOneToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
                     $sectionEntity
                 );
-                break;
             case self::ONE_TO_ONE:
-                $this->addOneToOneToForm(
+                return $this->addOneToOneToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
                     $sectionEntity
                 );
-                break;
         }
 
         return $formBuilder;
@@ -86,8 +83,8 @@ class Relationship extends FieldType
         SectionInterface $section
     ): FormBuilderInterface {
 
+        $formOptions = $this->formOptions($sectionEntity);
         $fieldConfig = $this->getConfig()->toArray();
-
         $sectionHandle = $fieldConfig['field']['to'];
 
         $sectionTo = $sectionManager
@@ -97,9 +94,11 @@ class Relationship extends FieldType
             ->getConfig()
             ->getFullyQualifiedClassName();
 
+
         try {
             $entries = $readSection->read(ReadOptions::fromArray([
-                'section' => $fullyQualifiedClassName
+                ReadOptions::SECTION => $fullyQualifiedClassName,
+                ReadOptions::LIMIT => 100
             ]));
         } catch (\Exception $exception) {
             $entries = [];
@@ -111,18 +110,22 @@ class Relationship extends FieldType
         }
 
         $toHandle = Inflector::pluralize($sectionHandle);
-        $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
 
-        $selectedEntitiesArray = $selectedEntities ? $selectedEntities->toArray() : null;
+        $selectedEntities = null;
+        $selectedEntitiesArray = null;
+        if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
+            $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
+            $selectedEntitiesArray = $selectedEntities ? $selectedEntities->toArray() : null;
+        }
 
         $formBuilder->add(
             $toHandle,
             ChoiceType::class,
-            [
+            array_merge([
                 'choices' => $choices,
                 'data' => $selectedEntitiesArray,
                 'multiple' => true
-            ]
+            ], $this->formOptions($sectionEntity))
         );
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
@@ -151,8 +154,8 @@ class Relationship extends FieldType
         $sectionEntity
     ): FormBuilderInterface {
 
+        $formOptions = $this->formOptions($sectionEntity);
         $fieldConfig = $this->getConfig()->toArray();
-
         $sectionHandle = $fieldConfig['field']['to'];
 
         $sectionTo = $sectionManager
@@ -165,12 +168,17 @@ class Relationship extends FieldType
         $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
         $toHandle = Inflector::pluralize($toHandle);
 
-        $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
-        $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
+        $sectionEntities = null;
+        $sectionEntitiesArray = null;
+        if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
+            $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
+            $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
+        }
 
         try {
             $entries = $readSection->read(ReadOptions::fromArray([
-                'section' => $fullyQualifiedClassName
+                ReadOptions::SECTION => $fullyQualifiedClassName,
+                ReadOptions::LIMIT => 100
             ]));
         } catch (\Exception $exception) {
             $entries = [];
@@ -184,11 +192,11 @@ class Relationship extends FieldType
         $formBuilder->add(
             $toHandle,
             ChoiceType::class,
-            [
+            array_merge([
                 'choices' => $choices,
                 'data' => $sectionEntitiesArray,
                 'multiple' => true
-            ]
+            ], $this->formOptions($sectionEntity))
         );
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
@@ -217,10 +225,9 @@ class Relationship extends FieldType
         $sectionEntity
     ): FormBuilderInterface {
 
+        $formOptions = $this->formOptions($sectionEntity);
         $fieldConfig = $this->getConfig()->toArray();
-
         $sectionHandle = $fieldConfig['field']['to'];
-
         $sectionTo = $sectionManager
             ->readByHandle(Handle::fromString($sectionHandle));
 
@@ -229,11 +236,16 @@ class Relationship extends FieldType
             ->getFullyQualifiedClassName();
 
         $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
-        $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
+
+        $selectedEntity = [];
+        if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
+            $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
+        }
 
         try {
             $entries = $readSection->read(ReadOptions::fromArray([
-                'section' => $fullyQualifiedClassName
+                ReadOptions::SECTION => $fullyQualifiedClassName,
+                ReadOptions::LIMIT => 100
             ]));
         } catch (\Exception $exception) {
             $entries = [];
@@ -247,11 +259,11 @@ class Relationship extends FieldType
         $formBuilder->add(
             $toHandle,
             ChoiceType::class,
-            [
+            array_merge([
                 'choices' => $choices,
                 'data' => $selectedEntity,
-                'multiple' => false
-            ]
+                'multiple' => true
+            ], $formOptions)
         );
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
@@ -276,8 +288,8 @@ class Relationship extends FieldType
         $sectionEntity
     ): FormBuilderInterface {
 
+        $formOptions = $this->formOptions($sectionEntity);
         $fieldConfig = $this->getConfig()->toArray();
-
         $sectionHandle = $fieldConfig['field']['to'];
         $sectionTo = $sectionManager
             ->readByHandle(Handle::fromString($sectionHandle));
@@ -287,11 +299,16 @@ class Relationship extends FieldType
             ->getFullyQualifiedClassName();
 
         $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
-        $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
+
+        $selectedEntity = [];
+        if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
+            $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
+        }
 
         try {
             $entries = $readSection->read(ReadOptions::fromArray([
-                'section' => $fullyQualifiedClassName
+                ReadOptions::SECTION => $fullyQualifiedClassName,
+                ReadOptions::LIMIT => 100
             ]));
         } catch (\Exception $exception) {
             $entries = [];
@@ -305,11 +322,11 @@ class Relationship extends FieldType
         $formBuilder->add(
             $toHandle,
             ChoiceType::class,
-            [
+            array_merge([
                 'choices' => $choices,
                 'data' => $selectedEntity,
-                'multiple' => false
-            ]
+                'multiple' => true
+            ], $this->formOptions($sectionEntity))
         );
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(

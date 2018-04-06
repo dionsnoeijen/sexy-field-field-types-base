@@ -8,6 +8,7 @@ use Mockery as M;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
+use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
 use Tardigrades\SectionField\ValueObject\FieldConfig;
@@ -31,7 +32,7 @@ class SlugTest extends TestCase
 
         $formBuilder = M::mock(FormBuilderInterface::class);
         $section = M::mock(SectionInterface::class);
-        $sectionEntity = M::mock(FieldType::class);
+        $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
 
