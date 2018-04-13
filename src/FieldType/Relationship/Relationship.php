@@ -268,13 +268,17 @@ class Relationship extends FieldType
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
             function () { return; },
-            function ($slug) use ($sectionHandle, $readSection) {
-                return $readSection->read(
-                    ReadOptions::fromArray([
-                        ReadOptions::SECTION => $sectionHandle,
-                        ReadOptions::SLUG => $slug
-                    ])
-                )->current();
+            function ($many) use ($sectionHandle, $readSection) {
+                $entries = [];
+                foreach ($many as $slug) {
+                    $entries[] = $readSection->read(
+                        ReadOptions::fromArray([
+                            ReadOptions::SECTION => $sectionHandle,
+                            ReadOptions::SLUG => $slug
+                        ])
+                    )->current();
+                }
+                return $entries;
             }
         ));
 

@@ -13,6 +13,7 @@ declare (strict_types=1);
 
 namespace Tardigrades\FieldType\DateTime;
 
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
@@ -33,11 +34,7 @@ class DateTimeField extends FieldType
 
         if (!$this->hasEntityEvent('prePersist')) {
             $options = $this->formOptions($sectionEntity);
-
-            // Default values
-            if (!isset($options['format'])) {
-                $options['format'] = DateTimeType::HTML5_FORMAT;
-            }
+            $toHandle = (string) $this->getConfig()->getHandle();
 
             if (!isset($options['data'])) {
                 $options['data'] = 'now';
@@ -47,7 +44,7 @@ class DateTimeField extends FieldType
             $options['data'] = new \DateTime($options['data']);
 
             $formBuilder->add(
-                (string) $this->getConfig()->getHandle(),
+                $toHandle,
                 DateTimeType::class,
                 $options
             );
