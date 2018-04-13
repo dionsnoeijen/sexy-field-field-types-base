@@ -13,7 +13,6 @@ declare (strict_types=1);
 
 namespace Tardigrades\FieldType\DateTime;
 
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
