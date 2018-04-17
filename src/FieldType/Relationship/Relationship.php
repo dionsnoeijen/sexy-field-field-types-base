@@ -266,25 +266,25 @@ class Relationship extends FieldType
             array_merge([
                 'choices' => $choices,
                 'data' => $selectedEntity,
-                'multiple' => true
+                'multiple' => false
             ], $formOptions)
         );
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
             function () { return; },
-            function ($many) use ($sectionHandle, $readSection) {
-                $entries = [];
-                foreach ($many as $slug) {
+            function ($one) use ($sectionHandle, $readSection) {
+                $entry = null;
+                if ($one !== false) {
                     try {
-                        $entries[] = $readSection->read(
+                        $entry = $readSection->read(
                             ReadOptions::fromArray([
                                 ReadOptions::SECTION => $sectionHandle,
-                                ReadOptions::SLUG => $slug
+                                ReadOptions::SLUG => $one
                             ])
                         )->current();
                     } catch (\Exception $exception) {}
                 }
-                return $entries;
+                return $entry;
             }
         ));
 
@@ -335,23 +335,24 @@ class Relationship extends FieldType
             array_merge([
                 'choices' => $choices,
                 'data' => $selectedEntity,
-                'multiple' => true
+                'multiple' => false
             ], $this->formOptions($sectionEntity))
         );
 
         $formBuilder->get($toHandle)->addModelTransformer(new CallbackTransformer(
             function () { return; },
-            function ($slug) use ($sectionHandle, $readSection) {
+            function ($one) use ($sectionHandle, $readSection) {
                 $entry = null;
-                try {
-                    $entry = $readSection->read(
-                        ReadOptions::fromArray([
-                            ReadOptions::SECTION => $sectionHandle,
-                            ReadOptions::SLUG => $slug
-                        ])
-                    )->current();
-                } catch (\Exception $exception) {}
-
+                if ($one !== false) {
+                    try {
+                        $entry = $readSection->read(
+                            ReadOptions::fromArray([
+                                ReadOptions::SECTION => $sectionHandle,
+                                ReadOptions::SLUG => $one
+                            ])
+                        )->current();
+                    } catch (\Exception $exception) {}
+                }
                 return $entry;
             }
         ));
