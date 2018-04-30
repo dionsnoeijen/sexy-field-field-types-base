@@ -13,6 +13,7 @@ declare (strict_types=1);
 
 namespace Tardigrades\FieldType\Relationship;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Inflector;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,6 +24,7 @@ use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadOptions;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
+use Tardigrades\SectionField\ValueObject\FullyQualifiedClassName;
 use Tardigrades\SectionField\ValueObject\Handle;
 
 class Relationship extends FieldType
@@ -95,25 +97,14 @@ class Relationship extends FieldType
             ->getFullyQualifiedClassName();
 
 
-        try {
-            $entries = $readSection->read(ReadOptions::fromArray([
-                ReadOptions::SECTION => $fullyQualifiedClassName,
-                ReadOptions::LIMIT => 100
-            ]));
-        } catch (\Exception $exception) {
-            $entries = [];
-        }
-
-        $choices = [];
-        foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = (string) $entry->getSlug();
-        }
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
 
         $toHandle = Inflector::pluralize($sectionHandle);
 
         $selectedEntities = null;
         $selectedEntitiesArray = null;
         if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
+            /** @var Collection $sectionEntities */
             $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
             $selectedEntitiesArray = $selectedEntities ? $selectedEntities->toArray() : null;
         }
@@ -160,8 +151,7 @@ class Relationship extends FieldType
         $fieldConfig = $this->getConfig()->toArray();
         $sectionHandle = $fieldConfig['field']['to'];
 
-        $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($sectionHandle));
+        $sectionTo = $sectionManager->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
@@ -173,23 +163,12 @@ class Relationship extends FieldType
         $sectionEntities = null;
         $sectionEntitiesArray = null;
         if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
+            /** @var Collection $sectionEntities */
             $sectionEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
             $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
         }
 
-        try {
-            $entries = $readSection->read(ReadOptions::fromArray([
-                ReadOptions::SECTION => $fullyQualifiedClassName,
-                ReadOptions::LIMIT => 100
-            ]));
-        } catch (\Exception $exception) {
-            $entries = [];
-        }
-
-        $choices = [];
-        foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = (string) $entry->getSlug();
-        }
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
 
         $formBuilder->add(
             $toHandle,
@@ -246,19 +225,7 @@ class Relationship extends FieldType
             $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
         }
 
-        try {
-            $entries = $readSection->read(ReadOptions::fromArray([
-                ReadOptions::SECTION => $fullyQualifiedClassName,
-                ReadOptions::LIMIT => 100
-            ]));
-        } catch (\Exception $exception) {
-            $entries = [];
-        }
-
-        $choices = [ '...' => false ];
-        foreach ($entries as $entry) {
-            $choices[$entry->getDefault()] = (string) $entry->getSlug();
-        }
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
 
         $formBuilder->add(
             $toHandle,
@@ -274,7 +241,7 @@ class Relationship extends FieldType
             function () { return; },
             function ($one) use ($sectionHandle, $readSection) {
                 $entry = null;
-                if ($one !== false) {
+                if (!empty($one)) {
                     try {
                         $entry = $readSection->read(
                             ReadOptions::fromArray([
@@ -315,19 +282,7 @@ class Relationship extends FieldType
             $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
         }
 
-        try {
-            $entries = $readSection->read(ReadOptions::fromArray([
-                ReadOptions::SECTION => $fullyQualifiedClassName,
-                ReadOptions::LIMIT => 100
-            ]));
-        } catch (\Exception $exception) {
-            $entries = [];
-        }
-
-        $choices = ['...' => false];
-        foreach ($entries as $entry) {
-            $choices[(string) $entry->getDefault()] = (string) $entry->getSlug();
-        }
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
 
         $formBuilder->add(
             $toHandle,
@@ -343,7 +298,7 @@ class Relationship extends FieldType
             function () { return; },
             function ($one) use ($sectionHandle, $readSection) {
                 $entry = null;
-                if ($one !== false) {
+                if (!empty($one)) {
                     try {
                         $entry = $readSection->read(
                             ReadOptions::fromArray([
@@ -358,5 +313,55 @@ class Relationship extends FieldType
         ));
 
         return $formBuilder;
+    }
+
+    private function buildOptions(
+        FullyQualifiedClassName $fullyQualifiedClassName,
+        array $fieldConfig,
+        ReadSectionInterface $readSection
+    ): array {
+
+        $readOptions = [
+            ReadOptions::SECTION => $fullyQualifiedClassName,
+            ReadOptions::LIMIT => 100
+        ];
+        $nameExpression = [];
+
+        try {
+            $instructions = $fieldConfig['field']['form']['sexy-field-instructions']['relationship'];
+
+            $readOptions[ReadOptions::LIMIT] = !empty($instructions['limit']) ?
+                $instructions['limit'] :
+                $readOptions[ReadOptions::LIMIT];
+
+            if (!empty($instructions['field']) && !empty($instructions['value'])) {
+                $readOptions[ReadOptions::FIELD] = [$instructions['field'] => $instructions['value']];
+            }
+            if (!empty($instructions['name-expression'])) {
+                $nameExpression = explode('|', $instructions['name-expression']);
+            }
+        } catch (\Exception $exception) {
+            // If no instructions it's fine, we have defaults
+        }
+
+        $entries = $readSection->read(ReadOptions::fromArray($readOptions));
+        $choices = [ '...' => false ];
+        foreach ($entries as $entry) {
+            $name = $entry->getDefault();
+            if ($nameExpression) {
+                $find = $entry;
+                foreach ($nameExpression as $method) {
+                    if ($find) {
+                        $find = $find->$method();
+                    }
+                }
+                if ($find) {
+                    $name = $find;
+                }
+            }
+            $choices[$name] = (string) $entry->getSlug();
+        }
+
+        return $choices;
     }
 }

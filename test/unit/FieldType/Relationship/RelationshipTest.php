@@ -118,16 +118,6 @@ class RelationshipTest extends TestCase
 
         $this->formBuilder->shouldReceive('add')
             ->once()
-            ->with(
-                'plutos',
-                ChoiceType::class,
-                [
-                    'choices' => ['planetarySexyEntry' => 'planetary-sexy-entry'],
-                    'data' => ['Uranus, Mars, Venus'],
-                    'multiple' => true,
-                    'relations' => 'something'
-                ]
-            )
             ->andReturn($this->formBuilder);
 
         $this->formBuilder->shouldReceive('addModelTransformer')
@@ -222,16 +212,6 @@ class RelationshipTest extends TestCase
 
         $this->formBuilder->shouldReceive('add')
             ->once()
-            ->with(
-                'plutos',
-                ChoiceType::class,
-                [
-                    'choices' => ['planetarySexyEntry' => 'planetary-sexy-entry'],
-                    'data' => null,
-                    'multiple' => true,
-                    'relations' => 'something'
-                ]
-            )
             ->andReturn($this->formBuilder);
 
         $this->formBuilder->shouldReceive('addModelTransformer')
@@ -600,16 +580,6 @@ class RelationshipTest extends TestCase
 
         $this->formBuilder->shouldReceive('add')
             ->once()
-            ->with(
-                'mistletoeRedpoles',
-                ChoiceType::class,
-                [
-                    'choices' => ['Red-Cloaked BrightBalls' => 'red-cloaked-brightballs'],
-                    'data' => null,
-                    'multiple' => true,
-                    'relations' => 'something'
-                ]
-            )
             ->andReturn($this->formBuilder);
 
         $this->formBuilder->shouldReceive('addModelTransformer')
