@@ -99,7 +99,8 @@ class Relationship extends FieldType
 
         $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
 
-        $toHandle = Inflector::pluralize($sectionHandle);
+        $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
+        $toHandle = Inflector::pluralize($toHandle);
 
         $selectedEntities = null;
         $selectedEntitiesArray = null;
