@@ -360,6 +360,14 @@ class Relationship extends FieldType
                     $name = $find;
                 }
             }
+
+            // It's possible, in certain cases, that the
+            // Name is double, prevent submission errors
+            // by guaranteeing a unique name
+            if (!empty($choices[$name])) {
+                $name = $name . ' ' . rand(0, 9999999999);
+            }
+
             $choices[$name] = (string) $entry->getSlug();
         }
 
