@@ -51,28 +51,35 @@ class Relationship extends FieldType
                     $readSection,
                     $sectionManager,
                     $sectionEntity,
-                    $section
+                    $section,
+                    $request
                 );
             case self::ONE_TO_MANY:
                 return $this->addOneToManyToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
-                    $sectionEntity
+                    $sectionEntity,
+                    $section,
+                    $request
                 );
             case self::MANY_TO_ONE:
                 return $this->addManyToOneToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
-                    $sectionEntity
+                    $sectionEntity,
+                    $section,
+                    $request
                 );
             case self::ONE_TO_ONE:
                 return $this->addOneToOneToForm(
                     $formBuilder,
                     $readSection,
                     $sectionManager,
-                    $sectionEntity
+                    $sectionEntity,
+                    $section,
+                    $request
                 );
         }
 
@@ -83,8 +90,9 @@ class Relationship extends FieldType
         FormBuilderInterface $formBuilder,
         ReadSectionInterface $readSection,
         SectionManagerInterface $sectionManager,
-        $sectionEntity,
-        SectionInterface $section
+        CommonSectionInterface $sectionEntity,
+        SectionInterface $section,
+        Request $request
     ): FormBuilderInterface {
 
         $formOptions = $this->formOptions($sectionEntity);
@@ -98,14 +106,14 @@ class Relationship extends FieldType
             ->getConfig()
             ->getFullyQualifiedClassName();
 
-
-        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
-
         $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
         $toHandle = Inflector::pluralize($toHandle);
 
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection, $toHandle, $request);
+
         $selectedEntities = null;
         $selectedEntitiesArray = null;
+
         if (!isset($formOptions['mapped']) || $formOptions['mapped']) {
             /** @var Collection $sectionEntities */
             $selectedEntities = $sectionEntity->{'get' . ucfirst($toHandle)}();
@@ -147,7 +155,9 @@ class Relationship extends FieldType
         FormBuilderInterface $formBuilder,
         ReadSectionInterface $readSection,
         SectionManagerInterface $sectionManager,
-        $sectionEntity
+        CommonSectionInterface $sectionEntity,
+        SectionInterface $section,
+        Request $request
     ): FormBuilderInterface {
 
         $formOptions = $this->formOptions($sectionEntity);
@@ -171,7 +181,7 @@ class Relationship extends FieldType
             $sectionEntitiesArray = $sectionEntities ? $sectionEntities->toArray() : null;
         }
 
-        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection, $toHandle, $request);
 
         $formBuilder->add(
             $toHandle,
@@ -208,14 +218,15 @@ class Relationship extends FieldType
         FormBuilderInterface $formBuilder,
         ReadSectionInterface $readSection,
         SectionManagerInterface $sectionManager,
-        $sectionEntity
+        CommonSectionInterface $sectionEntity,
+        SectionInterface $section,
+        Request $request
     ): FormBuilderInterface {
 
         $formOptions = $this->formOptions($sectionEntity);
         $fieldConfig = $this->getConfig()->toArray();
         $sectionHandle = $fieldConfig['field']['to'];
-        $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($sectionHandle));
+        $sectionTo = $sectionManager->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
@@ -228,7 +239,7 @@ class Relationship extends FieldType
             $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
         }
 
-        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection, $toHandle, $request);
 
         $formBuilder->add(
             $toHandle,
@@ -265,14 +276,15 @@ class Relationship extends FieldType
         FormBuilderInterface $formBuilder,
         ReadSectionInterface $readSection,
         SectionManagerInterface $sectionManager,
-        $sectionEntity
+        CommonSectionInterface $sectionEntity,
+        SectionInterface $section,
+        Request $request
     ): FormBuilderInterface {
 
         $formOptions = $this->formOptions($sectionEntity);
         $fieldConfig = $this->getConfig()->toArray();
         $sectionHandle = $fieldConfig['field']['to'];
-        $sectionTo = $sectionManager
-            ->readByHandle(Handle::fromString($sectionHandle));
+        $sectionTo = $sectionManager->readByHandle(Handle::fromString($sectionHandle));
 
         $fullyQualifiedClassName = $sectionTo
             ->getConfig()
@@ -285,7 +297,7 @@ class Relationship extends FieldType
             $selectedEntity = $sectionEntity->{'get' . ucfirst($toHandle)}();
         }
 
-        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection);
+        $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection, $toHandle, $request);
 
         $formBuilder->add(
             $toHandle,
@@ -321,7 +333,9 @@ class Relationship extends FieldType
     private function buildOptions(
         FullyQualifiedClassName $fullyQualifiedClassName,
         array $fieldConfig,
-        ReadSectionInterface $readSection
+        ReadSectionInterface $readSection,
+        string $sectionHandle,
+        Request $request
     ): array {
 
         $readOptions = [
@@ -329,6 +343,7 @@ class Relationship extends FieldType
             ReadOptions::LIMIT => 100
         ];
         $nameExpression = [];
+        $formData = $request->get('form');
 
         try {
             $instructions = $fieldConfig['field']['form']['sexy-field-instructions']['relationship'];
@@ -347,31 +362,52 @@ class Relationship extends FieldType
             // If no instructions it's fine, we have defaults
         }
 
-        $entries = $readSection->read(ReadOptions::fromArray($readOptions));
-        $choices = [ '...' => false ];
-        foreach ($entries as $entry) {
-            $name = $entry->getDefault();
-            if ($nameExpression) {
-                $find = $entry;
-                foreach ($nameExpression as $method) {
+        $choices = [];
+
+        if ($formData === null) {
+            $entries = $readSection->read(ReadOptions::fromArray($readOptions));
+            $choices = ['...' => false];
+            foreach ($entries as $entry) {
+
+                $name = $entry->getDefault();
+                if ($nameExpression) {
+                    $find = $entry;
+                    foreach ($nameExpression as $method) {
+                        if ($find) {
+                            $find = $find->$method();
+                        }
+                    }
                     if ($find) {
-                        $find = $find->$method();
+                        $name = $find;
                     }
                 }
-                if ($find) {
-                    $name = $find;
+
+                // It's possible, in certain cases, that the
+                // Name is double, prevent submission errors
+                // by guaranteeing a unique name
+                if (!empty($choices[$name])) {
+                    $name = $name . ' ' . rand(0, 9999999999);
+                }
+
+                $choices[$name] = (string)$entry->getSlug();
+            }
+        } else {
+            // When we have posted data, we only need to make sure the Choice
+            // field will pass. This can be done by populating it with the
+            // posted data
+            if (!empty($formData[$sectionHandle])) {
+                if (is_array($formData[$sectionHandle])) {
+                    foreach ($formData[$sectionHandle] as $slug) {
+                        $choices[substr(md5(mt_rand()), 0, 32)] = $slug;
+                    }
+                } else {
+                    if (is_string($formData[$sectionHandle])) {
+                        $choices[substr(md5(mt_rand()), 0, 32)] = $formData[$sectionHandle];
+                    }
                 }
             }
-
-            // It's possible, in certain cases, that the
-            // Name is double, prevent submission errors
-            // by guaranteeing a unique name
-            if (!empty($choices[$name])) {
-                $name = $name . ' ' . rand(0, 9999999999);
-            }
-
-            $choices[$name] = (string) $entry->getSlug();
         }
+
 
         return $choices;
     }

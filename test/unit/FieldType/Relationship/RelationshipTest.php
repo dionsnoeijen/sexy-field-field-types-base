@@ -131,6 +131,9 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn($this->formBuilder);
 
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
 
         $relation->addToForm(
             $this->formBuilder,
@@ -226,6 +229,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn($this->formBuilder);
 
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
+
         $relation->addToForm(
             $this->formBuilder,
             $this->section,
@@ -316,6 +323,10 @@ class RelationshipTest extends TestCase
         $this->formBuilder->shouldReceive('get')
             ->once()
             ->andReturn($this->formBuilder);
+
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
 
         $relation->addToForm(
             $this->formBuilder,
@@ -408,6 +419,10 @@ class RelationshipTest extends TestCase
         $this->formBuilder->shouldReceive('get')
             ->once()
             ->andReturn($this->formBuilder);
+
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
 
         $relation->addToForm(
             $this->formBuilder,
@@ -502,6 +517,10 @@ class RelationshipTest extends TestCase
         $this->formBuilder->shouldReceive('get')
             ->once()
             ->andReturn($this->formBuilder);
+
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
 
         $relation->addToForm(
             $this->formBuilder,
@@ -598,6 +617,10 @@ class RelationshipTest extends TestCase
             ->once()
             ->andReturn($this->formBuilder);
 
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
+
         $relation->addToForm(
             $this->formBuilder,
             $this->section,
@@ -688,6 +711,10 @@ class RelationshipTest extends TestCase
         $this->formBuilder->shouldReceive('get')
             ->once()
             ->andReturn($this->formBuilder);
+
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
 
         $relation->addToForm(
             $this->formBuilder,
@@ -780,6 +807,10 @@ class RelationshipTest extends TestCase
         $this->formBuilder->shouldReceive('get')
             ->once()
             ->andReturn($this->formBuilder);
+
+        $this->request->shouldReceive('get')
+            ->once()
+            ->andReturn(null);
 
         $relation->addToForm(
             $this->formBuilder,
