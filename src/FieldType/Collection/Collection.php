@@ -16,6 +16,7 @@ namespace Tardigrades\FieldType\Collection;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -29,7 +30,8 @@ class Collection extends FieldType
         SectionInterface $section,
         CommonSectionInterface $sectionEntity,
         SectionManagerInterface $sectionManager,
-        ReadSectionInterface $readSection
+        ReadSectionInterface $readSection,
+        Request $request
     ): FormBuilderInterface {
 
         $options = $this->formOptions($sectionEntity);

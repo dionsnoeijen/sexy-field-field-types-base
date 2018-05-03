@@ -18,6 +18,7 @@ use Doctrine\Common\Util\Inflector;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -39,7 +40,8 @@ class Relationship extends FieldType
         SectionInterface $section,
         CommonSectionInterface $sectionEntity,
         SectionManagerInterface $sectionManager,
-        ReadSectionInterface $readSection
+        ReadSectionInterface $readSection,
+        Request $request
     ): FormBuilderInterface {
 
         switch ($this->getConfig()->getRelationshipKind()) {

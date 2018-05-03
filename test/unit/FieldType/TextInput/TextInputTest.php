@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as M;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -33,6 +34,7 @@ class TextInputTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $textInput = new TextInput();
         $config = FieldConfig::fromArray(
@@ -55,7 +57,10 @@ class TextInputTest extends TestCase
             ->with('lovehandles', TextType::class, ['Marinated BrightBalls'])
             ->andReturn($formBuilder);
 
-        $textInput->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $textInput->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(TextInput::class, $textInput);
         $this->assertEquals($textInput->getConfig(), $config);

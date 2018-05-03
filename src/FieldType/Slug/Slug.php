@@ -14,6 +14,7 @@ declare (strict_types=1);
 namespace Tardigrades\FieldType\Slug;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -27,7 +28,8 @@ class Slug extends FieldType
         SectionInterface $section,
         CommonSectionInterface $sectionEntity,
         SectionManagerInterface $sectionManager,
-        ReadSectionInterface $readSection
+        ReadSectionInterface $readSection,
+        Request $request
     ): FormBuilderInterface {
 
 //        $formBuilder->add((string) $this->getConfig()->getHandle(), TextType::class);

@@ -13,6 +13,7 @@ declare (strict_types=1);
 
 namespace Tardigrades\FieldType\Choice;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Tardigrades\Entity\SectionInterface;
@@ -28,7 +29,8 @@ class Choice extends FieldType
         SectionInterface $section,
         CommonSectionInterface $sectionEntity,
         SectionManagerInterface $sectionManager,
-        ReadSectionInterface $readSection
+        ReadSectionInterface $readSection,
+        Request $request
     ): FormBuilderInterface {
         $options = $this->formOptions($sectionEntity);
 

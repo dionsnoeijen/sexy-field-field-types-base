@@ -3,12 +3,12 @@ declare (strict_types=1);
 
 namespace Tardigrades\FieldType\DateTime;
 
-use PHPUnit\Framework\TestCase;
 use Mockery as M;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
-use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
@@ -33,6 +33,7 @@ class DateTimeFieldTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $dateTimeField = new DateTimeField();
         $config = FieldConfig::fromArray(
@@ -69,7 +70,10 @@ class DateTimeFieldTest extends TestCase
             )
             ->andReturn($formBuilder);
 
-        $dateTimeField->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $dateTimeField->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(DateTimeField::class, $dateTimeField);
         $this->assertEquals($dateTimeField->getConfig(), $config);
@@ -86,6 +90,7 @@ class DateTimeFieldTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $dateTimeField = new DateTimeField();
         $config = FieldConfig::fromArray(
@@ -107,7 +112,10 @@ class DateTimeFieldTest extends TestCase
             ->once()
             ->andReturn($formBuilder);
 
-        $dateTimeField->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $dateTimeField->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(DateTimeField::class, $dateTimeField);
         $this->assertEquals($dateTimeField->getConfig(), $config);

@@ -5,8 +5,8 @@ namespace Tardigrades\FieldType\Relationship;
 
 use PHPUnit\Framework\TestCase;
 use Mockery as M;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
@@ -37,6 +37,9 @@ class RelationshipTest extends TestCase
     /** @var ReadSectionInterface|M\Mock */
     private $readSection;
 
+    /** @var Request */
+    private $request;
+
     public function setUp()
     {
         $this->formBuilder = M::mock(FormBuilderInterface::class);
@@ -44,6 +47,7 @@ class RelationshipTest extends TestCase
         $this->sectionEntity = M::mock(CommonSectionInterface::class);
         $this->sectionManager = M::mock(SectionManagerInterface::class);
         $this->readSection = M::mock(ReadSectionInterface::class);
+        $this->request = M::mock(Request::class);
     }
 
     /**
@@ -133,7 +137,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -226,7 +231,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -316,7 +322,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -407,7 +414,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -500,7 +508,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -594,7 +603,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -684,7 +694,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);
@@ -775,7 +786,8 @@ class RelationshipTest extends TestCase
             $this->section,
             $this->sectionEntity,
             $this->sectionManager,
-            $this->readSection
+            $this->readSection,
+            $this->request
         );
 
         $this->assertInstanceOf(Relationship::class, $relation);

@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as M;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -33,6 +34,7 @@ class IntegerTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $integer = new Integer();
         $config = FieldConfig::fromArray(
@@ -54,7 +56,10 @@ class IntegerTest extends TestCase
             ->once()
             ->with((string)$integer->getConfig()->getHandle(), IntegerType::class, ['IntegerTesting'])
             ->andReturn($formBuilder);
-        $integer->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $integer->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(Integer::class, $integer);
         $this->assertEquals($integer->getConfig(), $config);

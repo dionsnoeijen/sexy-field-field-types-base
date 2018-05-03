@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as M;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -33,6 +34,7 @@ class TextAreaTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $textArea = new TextArea();
         $config = FieldConfig::fromArray(
@@ -51,7 +53,10 @@ class TextAreaTest extends TestCase
             ->with('Frostbeard MilkSwallow', TextareaType::class, [])
             ->andReturn($formBuilder);
 
-        $textArea->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $textArea->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(TextArea::class, $textArea);
         $this->assertEquals($textArea->getConfig(), $config);

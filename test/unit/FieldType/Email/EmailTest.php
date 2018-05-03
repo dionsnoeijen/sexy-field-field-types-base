@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as M;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -33,6 +34,7 @@ class EmailTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $email = new Email();
         $config = FieldConfig::fromArray(
@@ -54,7 +56,10 @@ class EmailTest extends TestCase
             ->once()
             ->with((string)$email->getConfig()->getHandle(), EmailType::class, ['emailTesting'])
             ->andReturn($formBuilder);
-        $email->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $email->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(Email::class, $email);
         $this->assertEquals($email->getConfig(), $config);

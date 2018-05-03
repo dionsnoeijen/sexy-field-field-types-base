@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as M;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -33,6 +34,7 @@ class RichTextAreaTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $richTextArea = new RichTextArea();
         $config = FieldConfig::fromArray(
@@ -55,7 +57,10 @@ class RichTextAreaTest extends TestCase
             ->with('lovehandles', TextareaType::class, ['This is it'])
             ->andReturn($formBuilder);
 
-        $richTextArea->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+        $richTextArea->addToForm(
+            $formBuilder, $section, $sectionEntity,
+            $sectionManager, $readSection, $request
+        );
 
         $this->assertInstanceOf(RichTextArea::class, $richTextArea);
         $this->assertEquals($richTextArea->getConfig(), $config);

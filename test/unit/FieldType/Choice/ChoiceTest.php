@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as M;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
@@ -33,6 +34,7 @@ class ChoiceTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $choice = new Choice();
         $config = FieldConfig::fromArray(
@@ -54,7 +56,8 @@ class ChoiceTest extends TestCase
             ->once()
             ->with((string)$choice->getConfig()->getHandle(), ChoiceType::class, ['that'])
             ->andReturn($formBuilder);
-        $choice->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection);
+
+        $choice->addToForm($formBuilder, $section, $sectionEntity, $sectionManager, $readSection, $request);
 
         $this->assertInstanceOf(Choice::class, $choice);
         $this->assertEquals($choice->getConfig(), $config);

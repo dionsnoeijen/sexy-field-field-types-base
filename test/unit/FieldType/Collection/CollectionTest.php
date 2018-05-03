@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
@@ -33,6 +34,7 @@ class CollectionTest extends TestCase
         $sectionEntity = M::mock(CommonSectionInterface::class);
         $sectionManager = M::mock(SectionManagerInterface::class);
         $readSection = M::mock(ReadSectionInterface::class);
+        $request = M::mock(Request::class);
 
         $collection = new Collection();
         $config = FieldConfig::fromArray([
@@ -68,7 +70,8 @@ class CollectionTest extends TestCase
             $section,
             $sectionEntity,
             $sectionManager,
-            $readSection
+            $readSection,
+            $request
         );
 
         $this->assertInstanceOf(Collection::class, $collection);
