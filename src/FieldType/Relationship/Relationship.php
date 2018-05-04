@@ -398,17 +398,21 @@ class Relationship extends FieldType
             if (!empty($formData[$sectionHandle])) {
                 if (is_array($formData[$sectionHandle])) {
                     foreach ($formData[$sectionHandle] as $slug) {
-                        $choices[substr(md5(mt_rand()), 0, 32)] = $slug;
+                        $choices[$this->getRandomStringForKey()] = $slug;
                     }
                 } else {
                     if (is_string($formData[$sectionHandle])) {
-                        $choices[substr(md5(mt_rand()), 0, 32)] = $formData[$sectionHandle];
+                        $choices[$this->getRandomStringForKey()] = $formData[$sectionHandle];
                     }
                 }
             }
         }
 
-
         return $choices;
+    }
+
+    private function getRandomStringForKey(): string
+    {
+        return substr(md5((string) mt_rand()), 0, 32);
     }
 }
