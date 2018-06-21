@@ -6,6 +6,7 @@ namespace Tardigrades\FieldType\DateTime;
 use Mockery as M;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
@@ -71,6 +72,18 @@ class DateTimeTimezoneTest extends TestCase
             )
             ->andReturn($formBuilder);
 
+        $formBuilder->shouldReceive('add')
+            ->once()
+            ->with(
+                (string)$dateTimeField->getConfig()->getHandle().'Timezone',
+                TextType::class,
+                [
+                    'required' => false,
+                    'empty_data' => 'Europe/Amsterdam'
+                ]
+            )
+            ->andReturn($formBuilder);
+
         $dateTimeField->addToForm(
             $formBuilder, $section, $sectionEntity,
             $sectionManager, $readSection, $request
@@ -110,7 +123,7 @@ class DateTimeTimezoneTest extends TestCase
             ->andReturn(4);
 
         $formBuilder->shouldReceive('add')
-            ->once()
+            ->twice()
             ->andReturn($formBuilder);
 
         $dateTimeField->addToForm(

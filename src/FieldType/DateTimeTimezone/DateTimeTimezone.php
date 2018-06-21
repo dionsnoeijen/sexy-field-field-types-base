@@ -14,6 +14,7 @@ declare (strict_types=1);
 namespace Tardigrades\FieldType\DateTimeTimezone;
 
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
@@ -44,10 +45,22 @@ class DateTimeTimezone extends FieldType
             // As a config value, pass the date time argument
             $options['data'] = new \DateTime($options['data']);
 
+            $emptyData = !empty($options['empty_data']) ? $options['empty_data'] : 'Europe/Amsterdam';
+            unset($options['empty_data']);
+
             $formBuilder->add(
                 $toHandle,
                 DateTimeType::class,
                 $options
+            );
+
+            $formBuilder->add(
+                $toHandle.'Timezone',
+                TextType::class,
+                [
+                    'required' => false,
+                    'empty_data' => $emptyData
+                ]
             );
         }
 
