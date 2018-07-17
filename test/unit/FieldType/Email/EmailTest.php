@@ -54,7 +54,16 @@ class EmailTest extends TestCase
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with((string)$email->getConfig()->getHandle(), EmailType::class, ['emailTesting'])
+            ->with(
+                (string)$email->getConfig()->getHandle(),
+                EmailType::class, [
+                    'emailTesting',
+                    'constraints' => [
+                        new \Symfony\Component\Validator\Constraints\Email([
+                            'message' => 'form_error_invalid_email'
+                        ])
+                    ]
+                ])
             ->andReturn($formBuilder);
         $email->addToForm(
             $formBuilder, $section, $sectionEntity,

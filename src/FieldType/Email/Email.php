@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
 use Tardigrades\FieldType\FieldType;
+use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
@@ -33,7 +34,9 @@ class Email extends FieldType
         Request $request
     ): FormBuilderInterface {
         $options = $this->formOptions($sectionEntity);
-
+        $options['constraints'][] = new EmailConstraint([
+            'message' => 'form_error_invalid_email'
+        ]);
         $formBuilder->add(
             (string) $this->getConfig()->getHandle(),
             EmailType::class,
