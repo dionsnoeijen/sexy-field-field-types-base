@@ -66,4 +66,9 @@ class DateTimeTimezone extends FieldType
 
         return $formBuilder;
     }
+
+    public static function getCofields(string $handle): array
+    {
+        return ["{$handle}Timezone"];
+    }
 }
