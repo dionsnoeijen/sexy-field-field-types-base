@@ -34,14 +34,6 @@ class Country extends FieldType
     ): FormBuilderInterface {
         $options = $this->formOptions($sectionEntity);
 
-        if (!empty($options['choices'])) {
-            foreach ($options['choices'] as &$choice) {
-                if (is_null($choice)) {
-                    $choice = false;
-                }
-            }
-        }
-
         $formBuilder->add(
             (string) $this->getConfig()->getHandle(),
             CountryType::class,
