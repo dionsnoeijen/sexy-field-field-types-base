@@ -11,7 +11,7 @@ use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
-use Symfony\Component\Validator\Constraints\Date as SymfonyDate;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class Date extends FieldType
 {
@@ -27,7 +27,7 @@ class Date extends FieldType
 
         $formBuilder->add(
             (string) $this->getConfig()->getHandle(),
-            SymfonyDate::class,
+            DateType::class,
             $options
         );
 
