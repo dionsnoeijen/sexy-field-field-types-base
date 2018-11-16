@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tardigrades\FieldType\Date;
+namespace Tardigrades\FieldType\Birthday;
 
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,7 +13,7 @@ use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
 
-class Date extends FieldType
+class Birthday extends FieldType
 {
     public function addToForm(
         FormBuilderInterface $formBuilder,
