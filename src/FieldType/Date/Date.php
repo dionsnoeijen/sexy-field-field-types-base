@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tardigrades\FieldType\Date;
 
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Tardigrades\Entity\SectionInterface;
@@ -11,7 +12,6 @@ use Tardigrades\FieldType\FieldType;
 use Tardigrades\SectionField\Generator\CommonSectionInterface;
 use Tardigrades\SectionField\Service\ReadSectionInterface;
 use Tardigrades\SectionField\Service\SectionManagerInterface;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class Date extends FieldType
 {
@@ -24,10 +24,9 @@ class Date extends FieldType
         Request $request
     ): FormBuilderInterface {
         $options = $this->formOptions($sectionEntity);
-
         $formBuilder->add(
             (string) $this->getConfig()->getHandle(),
-            DateType::class,
+            BirthdayType::class,
             $options
         );
 
