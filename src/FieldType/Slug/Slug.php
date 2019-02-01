@@ -32,8 +32,6 @@ class Slug extends FieldType
         Request $request
     ): FormBuilderInterface {
 
-//        $formBuilder->add((string) $this->getConfig()->getHandle(), TextType::class);
-
         return $formBuilder;
     }
 }
