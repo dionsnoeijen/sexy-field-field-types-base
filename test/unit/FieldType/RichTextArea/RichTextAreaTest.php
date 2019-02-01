@@ -43,7 +43,11 @@ class RichTextAreaTest extends TestCase
                     [
                         'name' => 'sexyname',
                         'handle' => 'lovehandles',
-                        'form' => ['all' => ['This is it']]
+                        'form' => [
+                            'all' => [
+                                'mapped' => true
+                            ]
+                        ]
                     ]
             ]
         );
@@ -54,7 +58,10 @@ class RichTextAreaTest extends TestCase
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with('lovehandles', TextareaType::class, ['This is it'])
+            ->with('lovehandles', TextareaType::class, [
+                'mapped' => true,
+                'purify_html' => true
+            ])
             ->andReturn($formBuilder);
 
         $richTextArea->addToForm(
