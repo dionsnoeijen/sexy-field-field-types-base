@@ -15,6 +15,7 @@ namespace Tardigrades\FieldType\Relationship;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Inflector;
+use Exception;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\CallbackTransformer;
@@ -345,9 +346,11 @@ class Relationship extends FieldType
         $nameExpression = [];
         $formData = $request->get('form');
 
-        try {
+        if (!empty($fieldConfig['field']['form']) &&
+            !empty($fieldConfig['field']['form']['sexy-field-instructions']) &&
+            !empty($fieldConfig['field']['form']['sexy-field-instructions']['relationship'])
+        ) {
             $instructions = $fieldConfig['field']['form']['sexy-field-instructions']['relationship'];
-
             $readOptions[ReadOptions::LIMIT] = !empty($instructions['limit']) ?
                 $instructions['limit'] :
                 $readOptions[ReadOptions::LIMIT];
@@ -358,8 +361,6 @@ class Relationship extends FieldType
             if (!empty($instructions['name-expression'])) {
                 $nameExpression = explode('|', $instructions['name-expression']);
             }
-        } catch (\Exception $exception) {
-            // If no instructions it's fine, we have defaults
         }
 
         $choices = [];
