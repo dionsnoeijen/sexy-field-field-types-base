@@ -15,7 +15,6 @@ namespace Tardigrades\FieldType\Relationship;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Inflector;
-use Exception;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\CallbackTransformer;
