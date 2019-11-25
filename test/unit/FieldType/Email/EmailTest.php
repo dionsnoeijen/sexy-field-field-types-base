@@ -43,7 +43,12 @@ class EmailTest extends TestCase
                     [
                         'name' => 'sexyname',
                         'handle' => 'lovehandles',
-                        'form' => ['all' => ['emailTesting']]
+                        'form' => [
+                            'all' => [
+                                'emailTesting' => true,
+                                'purify_html' => true,
+                            ]
+                        ]
                     ]
             ]
         );
@@ -57,7 +62,8 @@ class EmailTest extends TestCase
             ->with(
                 (string)$email->getConfig()->getHandle(),
                 EmailType::class, [
-                    'emailTesting',
+                    'emailTesting' => true,
+                    'purify_html' => true,
                     'constraints' => [
                         new \Symfony\Component\Validator\Constraints\Email([
                             'message' => 'form_error_invalid_email'

@@ -37,6 +37,9 @@ class Email extends FieldType
         $options['constraints'][] = new EmailConstraint([
             'message' => 'form_error_invalid_email'
         ]);
+
+        $options['purify_html'] = empty($options['purify_html']) ? true : $options['purify_html'];
+
         $formBuilder->add(
             (string) $this->getConfig()->getHandle(),
             EmailType::class,
