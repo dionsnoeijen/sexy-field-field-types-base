@@ -50,7 +50,9 @@ class TextAreaTest extends TestCase
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with('Frostbeard MilkSwallow', TextareaType::class, [])
+            ->with('Frostbeard MilkSwallow', TextareaType::class, [
+                'purify_html' => true
+            ])
             ->andReturn($formBuilder);
 
         $textArea->addToForm(

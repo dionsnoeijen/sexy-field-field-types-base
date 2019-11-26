@@ -54,7 +54,10 @@ class TextInputTest extends TestCase
 
         $formBuilder->shouldReceive('add')
             ->once()
-            ->with('lovehandles', TextType::class, ['Marinated BrightBalls'])
+            ->with('lovehandles', TextType::class, [
+                'Marinated BrightBalls',
+                'purify_html' => true
+            ])
             ->andReturn($formBuilder);
 
         $textInput->addToForm(

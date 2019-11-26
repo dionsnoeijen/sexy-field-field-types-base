@@ -24,6 +24,7 @@ class Birthday extends FieldType
         Request $request
     ): FormBuilderInterface {
         $options = $this->formOptions($sectionEntity);
+
         $formBuilder->add(
             (string) $this->getConfig()->getHandle(),
             BirthdayType::class,
