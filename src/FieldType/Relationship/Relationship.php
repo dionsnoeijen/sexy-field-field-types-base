@@ -14,7 +14,7 @@ declare (strict_types=1);
 namespace Tardigrades\FieldType\Relationship;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Util\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\CallbackTransformer;
@@ -107,7 +107,8 @@ class Relationship extends FieldType
             ->getFullyQualifiedClassName();
 
         $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
-        $toHandle = Inflector::pluralize($toHandle);
+        $inflector = InflectorFactory::create()->build();
+        $toHandle = $inflector->pluralize($toHandle);
 
         $choices = $this->buildOptions($fullyQualifiedClassName, $fieldConfig, $readSection, $toHandle, $request);
 
@@ -171,7 +172,8 @@ class Relationship extends FieldType
             ->getFullyQualifiedClassName();
 
         $toHandle = $fieldConfig['field']['as'] ?? $sectionHandle;
-        $toHandle = Inflector::pluralize($toHandle);
+        $inflector = InflectorFactory::create()->build();
+        $toHandle = $inflector->pluralize($toHandle);
 
         $sectionEntities = null;
         $sectionEntitiesArray = null;
