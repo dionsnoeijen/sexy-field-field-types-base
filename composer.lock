@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "38ca1e6cf15d34fbb948d1b4b0c87342",
+    "content-hash": "516e1888180d5dda3eefdd0e6ca20d43",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -5091,7 +5091,7 @@
         },
         {
             "name": "tardigrades/sexy-field",
-            "version": "dev-integrate-create-and-delete-options",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dionsnoeijen/sexy-field.git",
