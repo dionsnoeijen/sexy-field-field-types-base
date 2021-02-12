@@ -40,7 +40,7 @@ class RelationshipTest extends TestCase
     /** @var Request */
     private $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->formBuilder = M::mock(FormBuilderInterface::class);
         $this->section = M::mock(SectionInterface::class);
