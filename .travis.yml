@@ -2,5 +2,6 @@ language: php
 php:
   - '7.4'
 before_install:
+  - php -i | grep php.ini
   - echo 'xdebug.mode=coverage' >> /usr/local/etc/php/php.ini
 install: composer install
