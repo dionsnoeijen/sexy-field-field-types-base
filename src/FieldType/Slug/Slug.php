@@ -23,6 +23,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Slug extends FieldType
 {
+    const SLUG_FIELD_TYPE = 'Slug';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

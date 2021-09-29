@@ -15,6 +15,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Birthday extends FieldType
 {
+    const BIRTHDAY_FIELD_TYPE = 'Birthday';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

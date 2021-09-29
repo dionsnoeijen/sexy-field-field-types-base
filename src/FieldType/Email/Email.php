@@ -25,6 +25,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Email extends FieldType
 {
+    const EMAIL_FIELD_TYPE = 'Email';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class TextInput extends FieldType
 {
+    const TEXT_INPUT_FIELD_TYPE = 'TextInput';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

@@ -30,6 +30,11 @@ use Tardigrades\SectionField\ValueObject\Handle;
 
 class Relationship extends FieldType
 {
+    const RELATIONSHIP_FIELD_TYPE = 'Relationship';
+
+    const UNIDIRECTIONAL = 'unidirectional';
+    const BIDIRECTIONAL = 'bidirectional';
+
     const MANY_TO_MANY = 'many-to-many';
     const ONE_TO_MANY = 'one-to-many';
     const MANY_TO_ONE = 'many-to-one';
