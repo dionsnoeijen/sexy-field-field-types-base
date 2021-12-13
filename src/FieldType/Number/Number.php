@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Number extends FieldType
 {
+    const NUMBER_FIELD_TYPE = 'Number';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

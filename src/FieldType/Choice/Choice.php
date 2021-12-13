@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Choice extends FieldType
 {
+    const CHOICE_FIELD_TYPE = 'Choice';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

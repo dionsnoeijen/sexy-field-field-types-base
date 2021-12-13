@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Uuid extends FieldType
 {
+    const UUID_FIELD_TYPE = 'Uuid';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

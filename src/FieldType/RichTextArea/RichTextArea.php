@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class RichTextArea extends FieldType
 {
+    const RICH_TEXT_AREA_FIELD_TYPE = 'RichTextArea';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

@@ -2,6 +2,5 @@ language: php
 php:
   - '7.4'
 before_install:
-  - php -i | grep php.ini
   - echo 'xdebug.mode=coverage' >> /home/travis/.phpenv/versions/7.4.15/etc/php.ini
 install: composer install

@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Boolean extends FieldType
 {
+    const BOOLEAN_FIELD_TYPE = 'Boolean';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,
