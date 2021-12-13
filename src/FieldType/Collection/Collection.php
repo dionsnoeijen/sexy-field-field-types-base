@@ -25,6 +25,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Collection extends FieldType
 {
+    const COLLECTION_FIELD_TYPE = 'Collection';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

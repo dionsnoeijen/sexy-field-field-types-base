@@ -24,6 +24,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class Country extends FieldType
 {
+    const COUNTRY_FIELD_TYPE = 'Country';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,

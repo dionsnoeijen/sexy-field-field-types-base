@@ -25,6 +25,8 @@ use Tardigrades\SectionField\Service\SectionManagerInterface;
 
 class DateTimeTimezone extends FieldType
 {
+    const DATE_TIME_TIMEZONE_FIELD_TYPE = 'DateTimeTimezone';
+
     public function addToForm(
         FormBuilderInterface $formBuilder,
         SectionInterface $section,
